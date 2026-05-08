@@ -235,25 +235,24 @@ if menu == "🏠 Beranda":
         st.info("**Temuan 2**\n\nSVM unggul secara keseluruhan (F1 91,32%). XGBoost lebih seimbang dalam mendeteksi kelas negatif berkat parameter scale_pos_weight.")
     with col_c:
         st.warning("**Temuan 3**\n\nTrigram murni (3,3) menghasilkan performa paling rendah di semua algoritma akibat sparsity tinggi pada data ulasan pendek.")
-
 # ══════════════════════════════════════════════════════════════════════════════
 # HALAMAN 2 — PREDIKSI SENTIMEN
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "🔍 Prediksi Sentimen":
     st.markdown("## 🔍 Prediksi Sentimen Ulasan Webtoon")
     st.markdown("Masukkan ulasan pengguna aplikasi Webtoon untuk diklasifikasikan sentimennya.")
-
+ 
     model, tfidf = load_model()
     stemmer, stop_words, tokenize = load_nltk()
-
+ 
     if model is None:
         st.error("⚠️ Model tidak ditemukan. Pastikan file `model_SVM_best.pkl` tersedia.")
         st.stop()
-
+ 
     if stemmer is None:
         st.error("⚠️ Library preprocessing tidak berhasil dimuat.")
         st.stop()
-
+ 
     # Input
     st.markdown("### ✍️ Masukkan Ulasan")
     contoh_options = {
@@ -263,21 +262,21 @@ elif menu == "🔍 Prediksi Sentimen":
         "Contoh Negatif 1": "aplikasi sering error dan lambat sangat mengecewakan",
         "Contoh Negatif 2": "tidak bisa login sudah lama belum ada perbaikan dari developer",
     }
-
+ 
     pilihan = st.selectbox("Atau pilih contoh:", list(contoh_options.keys()))
     default_text = contoh_options[pilihan]
-
+ 
     user_input = st.text_area(
         "Teks ulasan:",
         value=default_text,
         height=120,
         placeholder="Contoh: aplikasi ini sangat bagus dan banyak komik seru..."
     )
-
+ 
     col_btn, col_clear = st.columns([1, 4])
     with col_btn:
         predict_btn = st.button("🔮 Prediksi", type="primary", use_container_width=True)
-
+ 
     if predict_btn:
         if not user_input.strip():
             st.warning("⚠️ Masukkan teks ulasan terlebih dahulu!")
@@ -286,12 +285,12 @@ elif menu == "🔍 Prediksi Sentimen":
                 clean = preprocess(user_input, stemmer, stop_words, tokenize)
                 vec   = tfidf.transform([clean])
                 pred  = model.predict(vec)[0]
-
+ 
             st.markdown("---")
             st.markdown("### 📊 Hasil Prediksi")
-
+ 
             col_res, col_detail = st.columns([1, 1.5])
-
+ 
             with col_res:
                 if pred == 1:
                     st.markdown('<div class="result-positive">✅ POSITIF</div>', unsafe_allow_html=True)
@@ -299,7 +298,7 @@ elif menu == "🔍 Prediksi Sentimen":
                 else:
                     st.markdown('<div class="result-negative">❌ NEGATIF</div>', unsafe_allow_html=True)
                     st.error("Ulasan ini mengekspresikan **sentimen negatif** — pengguna merasa tidak puas atau kecewa.")
-
+ 
             with col_detail:
                 st.markdown("**Detail Preprocessing:**")
                 st.markdown(f"**Teks asli:** {user_input[:200]}{'...' if len(user_input) > 200 else ''}")
@@ -307,17 +306,17 @@ elif menu == "🔍 Prediksi Sentimen":
                 st.code(clean if clean else "(teks kosong setelah preprocessing)")
                 st.markdown(f"**Jumlah token:** {len(clean.split()) if clean else 0}")
                 st.markdown(f"**Model:** SVM + Unigram+Bigram (1,2)")
-
+ 
     st.markdown("---")
     st.markdown("### 📋 Prediksi Banyak Ulasan (Upload CSV)")
     st.markdown("Upload file CSV dengan kolom `content` berisi ulasan-ulasan yang ingin diprediksi.")
-
+ 
     uploaded = st.file_uploader("Pilih file CSV", type=['csv'])
     if uploaded:
         df_upload = pd.read_csv(uploaded)
         st.write("**Preview data:**")
         st.dataframe(df_upload.head())
-
+ 
         if 'content' not in df_upload.columns:
             st.error("❌ File CSV harus memiliki kolom bernama `content`!")
         else:
@@ -329,9 +328,9 @@ elif menu == "🔍 Prediksi Sentimen":
                     vecs = tfidf.transform(df_upload['clean_text'])
                     df_upload['Prediksi'] = model.predict(vecs)
                     df_upload['Sentimen'] = df_upload['Prediksi'].map({1: '✅ Positif', 0: '❌ Negatif'})
-
+ 
                 st.success(f"✅ Selesai! {len(df_upload)} ulasan diproses.")
-
+ 
                 col_tbl, col_chart = st.columns([1.5, 1])
                 with col_tbl:
                     st.dataframe(df_upload[['content', 'Sentimen']].head(20))
@@ -344,7 +343,7 @@ elif menu == "🔍 Prediksi Sentimen":
                     ax.set_title('Distribusi Sentimen')
                     st.pyplot(fig)
                     plt.close()
-
+ 
                 csv_out = df_upload[['content', 'Sentimen']].to_csv(index=False).encode('utf-8')
                 st.download_button("⬇️ Download Hasil CSV", csv_out,
                                    'hasil_prediksi.csv', 'text/csv')
