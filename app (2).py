@@ -314,9 +314,9 @@ elif menu == "🔍 Prediksi Sentimen":
                 pred = model.predict(vec)[0]
 
                 # Confidence via decision_function → sigmoid
-                score    = model.decision_function(vec)[0]
-                prob_pos = 1 / (1 + math.exp(-score))
-                prob_neg = 1 - prob_pos
+                proba = model.predict_proba(vec)[0]
+                prob_neg = proba[0]
+                prob_pos = proba[1]
 
                 st.markdown("---")
                 st.markdown("### 📊 Hasil Prediksi")
