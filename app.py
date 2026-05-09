@@ -79,9 +79,52 @@ def load_preprocessing():
 
         # Kata negasi WAJIB dipertahankan
         negasi = {
-            'tidak','tak','bukan','bukanlah','tidaklah',
-            'kurang','jangan','jangankan','janganlah',
-            'belum','belumlah','tanpa','enggak','nggak','ngga'
+            # ======================
+    # FORMAL NEGATION
+    # ======================
+    'tidak','tak','bukan','bukanlah','tidaklah',
+    'belum','belumlah','tanpa',
+    'jangan','janganlah','jangankan',
+
+    # ======================
+    # INFORMAL / SLANG
+    # ======================
+    'enggak','nggak','ngga','gak','ga','gk','ngk','gx','tdk',
+    'nda','ndak','kagak','kaga','kagaklah',
+
+    # ======================
+    # VARIASI PENULISAN
+    # ======================
+    'belom','belon','blm','blum',
+    'tdak','tida','takkan','gakan','gaakan',
+
+    # ======================
+    # NEGASI FUTURE / INTENT
+    # ======================
+    'tidakkan','takkan','gakakan','gaakan','enggakakan',
+
+    # ======================
+    # NEGASI PENOLAKAN HALUS
+    # ======================
+    'ogah','gamau','gamao','gaingin','gkma','males',
+    'enggan',
+
+    # ======================
+    # NEGASI IMPLISIT (NUANCE NEGATIF)
+    # ======================
+    'kurang','jarang','sulit','susah','mustahil',
+    'minim','rendah','lemah','buruknya',
+
+    # ======================
+    # KONDISIONAL NEGATIF
+    # ======================
+    'tanpanya','tanpaku','tanpamu',
+
+    # ======================
+    # BENTUK LAIN (SERING DI SOSMED)
+    # ======================
+    'g','kg','k','gaaa','gakkk','nggakk','nggaaa',
+    'tdkk','tdakkk'
         }
         sw = sw - negasi
 
