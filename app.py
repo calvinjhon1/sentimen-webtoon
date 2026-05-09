@@ -254,106 +254,67 @@ if menu == "🏠 Beranda":
     cc.warning("**Temuan 3**\n\nTrigram murni (3,3) konsisten paling rendah di semua algoritma akibat sparsity tinggi pada ulasan pendek.")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# PREDIKSI SENTIMEN
+# HALAMAN 2 — PREDIKSI SENTIMEN
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "🔍 Prediksi Sentimen":
     st.markdown("## 🔍 Prediksi Sentimen Ulasan Webtoon")
-
+    st.markdown("Masukkan ulasan pengguna aplikasi Webtoon untuk diklasifikasikan sentimennya.")
+ 
     model, tfidf = load_model()
-    stemmer, stop_words, tokenize = load_preprocessing()
-
+    stemmer, stop_words, tokenize = load_nltk()
+ 
     if model is None:
-        st.error("⚠️ File `model_SVM_best.pkl` tidak ditemukan.")
+        st.error("⚠️ Model tidak ditemukan. Pastikan file `model_SVM_best.pkl` tersedia.")
         st.stop()
+ 
     if stemmer is None:
-        st.error("⚠️ Library preprocessing gagal dimuat.")
+        st.error("⚠️ Library preprocessing tidak berhasil dimuat.")
         st.stop()
-
-    # Catatan keterbatasan model
-    st.markdown("""
-    <div class="warning-box">
-    ⚠️ <b>Catatan Keterbatasan Model:</b> Dataset memiliki komposisi <b>82% positif</b> dan <b>18% negatif</b>,
-    sehingga model cenderung lebih kuat mengenali pola positif. Ulasan negatif yang singkat
-    atau sangat informal mungkin kurang terdeteksi — ini merupakan karakteristik umum
-    model klasifikasi pada data <i>imbalanced</i> yang telah dibahas dalam analisis penelitian.
-    </div>
-    """, unsafe_allow_html=True)
-
+ 
+    # Input
     st.markdown("### ✍️ Masukkan Ulasan")
-
-    contoh = {
-        "Tulis sendiri...": "",
-        "✅ Positif — pujian fitur": "aplikasi ini bagus banget banyak komik seru yang bisa dibaca gratis",
-        "✅ Positif — puas konten": "webtoon sangat seru ceritanya menarik dan gambarnya keren sekali",
-        "❌ Negatif — error teknis": "aplikasi sering error dan lambat sekali sangat mengecewakan",
-        "❌ Negatif — kecewa konten": "kecewa sekali komiknya membosankan dan tidak menarik sama sekali",
-        "❌ Negatif — tidak bisa login": "gak bisa login sudah lama belum ada perbaikan dari developer",
-        "❌ Negatif — iklan berlebihan": "iklannya terlalu banyak dan sangat mengganggu tidak nyaman dipakai",
+    contoh_options = {
+	@@ -263,21 +262,21 @@ def preprocess(text, stemmer, stop_words, tokenize):
+        "Contoh Negatif 1": "aplikasi sering error dan lambat sangat mengecewakan",
+        "Contoh Negatif 2": "tidak bisa login sudah lama belum ada perbaikan dari developer",
     }
-
-    pilihan = st.selectbox("Atau pilih contoh:", list(contoh.keys()))
+ 
+    pilihan = st.selectbox("Atau pilih contoh:", list(contoh_options.keys()))
+    default_text = contoh_options[pilihan]
+ 
     user_input = st.text_area(
         "Teks ulasan:",
-        value=contoh[pilihan],
-        height=110,
-        placeholder="Ketik ulasan Webtoon di sini..."
+        value=default_text,
+        height=120,
+        placeholder="Contoh: aplikasi ini sangat bagus dan banyak komik seru..."
     )
-
-    if st.button("🔮 Prediksi", type="primary"):
+ 
+    col_btn, col_clear = st.columns([1, 4])
+    with col_btn:
+        predict_btn = st.button("🔮 Prediksi", type="primary", use_container_width=True)
+ 
+    if predict_btn:
         if not user_input.strip():
             st.warning("⚠️ Masukkan teks ulasan terlebih dahulu!")
-        else:
-            with st.spinner("Memproses..."):
-                clean, steps = preprocess_with_steps(user_input, stemmer, stop_words, tokenize)
-
-            if not clean.strip():
-                st.error("❌ Teks tidak mengandung kata bermakna setelah preprocessing.")
-            else:
-                vec  = tfidf.transform([clean])
-                pred = model.predict(vec)[0]
-
-                # Confidence via decision_function → sigmoid
-                score    = model.decision_function(vec)[0]
-                prob_pos = 1 / (1 + math.exp(-score))
-                prob_neg = 1 - prob_pos
-
-                st.markdown("---")
-                st.markdown("### 📊 Hasil Prediksi")
-
-                col_hasil, col_detail = st.columns([1, 1.3])
-
-                with col_hasil:
-                    if pred == 1:
-                        st.markdown('<div class="result-positive">✅ POSITIF</div>', unsafe_allow_html=True)
-                        st.success("Ulasan diklasifikasikan sebagai **sentimen positif**.")
-                    else:
-                        st.markdown('<div class="result-negative">❌ NEGATIF</div>', unsafe_allow_html=True)
-                        st.error("Ulasan diklasifikasikan sebagai **sentimen negatif**.")
-
-                    st.markdown("**Skor Kepercayaan Model:**")
-                    st.metric("Skor → Positif", f"{prob_pos:.1%}")
-                    st.metric("Skor → Negatif", f"{prob_neg:.1%}")
-
-                    # Bar chart confidence
-                    fig, ax = plt.subplots(figsize=(4, 1.8))
-                    bars = ax.barh(
-                        ['Negatif','Positif'],
-                        [prob_neg, prob_pos],
-                        color=['#f5576c','#38ef7d'],
-                        edgecolor='white', linewidth=0.5
-                    )
-                    for bar, val in zip(bars, [prob_neg, prob_pos]):
-                        ax.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2,
-                                f'{val:.1%}', va='center', fontsize=10)
-                    ax.set_xlim(0, 1.15)
-                    ax.set_xlabel('Skor')
-                    ax.spines['top'].set_visible(False)
-                    ax.spines['right'].set_visible(False)
-                    plt.tight_layout()
-                    st.pyplot(fig)
-                    plt.close()
-
-                with col_detail:
+	@@ -286,38 +285,38 @@ def preprocess(text, stemmer, stop_words, tokenize):
+                clean = preprocess(user_input, stemmer, stop_words, tokenize)
+                vec   = tfidf.transform([clean])
+                pred  = model.predict(vec)[0]
+ 
+            st.markdown("---")
+            st.markdown("### 📊 Hasil Prediksi")
+ 
+            col_res, col_detail = st.columns([1, 1.5])
+ 
+            with col_res:
+                if pred == 1:
+                    st.markdown('<div class="result-positive">✅ POSITIF</div>', unsafe_allow_html=True)
+                    st.success("Ulasan ini mengekspresikan **sentimen positif** — pengguna merasa puas dengan aplikasi Webtoon.")
+                else:
+                    st.markdown('<div class="result-negative">❌ NEGATIF</div>', unsafe_allow_html=True)
+                    st.error("Ulasan ini mengekspresikan **sentimen negatif** — pengguna merasa tidak puas atau kecewa.")
+ 
+            with col_detail:
                 st.markdown("**Detail Preprocessing:**")
                 st.markdown(f"**Teks asli:** {user_input[:200]}{'...' if len(user_input) > 200 else ''}")
                 st.markdown(f"**Setelah preprocessing:**")
