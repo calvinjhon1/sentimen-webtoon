@@ -236,7 +236,6 @@ HASIL = [
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Webtoon_App_Logo.png/240px-Webtoon_App_Logo.png", width=80)
     st.markdown("### 📚 Analisis Sentimen Webtoon")
     st.markdown("---")
     menu = st.radio("Navigasi", ["🏠 Beranda", "🔍 Prediksi Sentimen", "📊 Hasil Penelitian"])
@@ -247,7 +246,8 @@ with st.sidebar:
     st.markdown("**F1-Score:** 91.32%")
     st.markdown("---")
     st.markdown("**Peneliti:** Calvin Jhon")
-    st.markdown("Sistem Informasi · 2025")
+    st.markdown("**NIM:** 00000070300")
+    st.markdown("Sistem Informasi · 2022")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # BERANDA
@@ -345,7 +345,7 @@ elif menu == "🔍 Prediksi Sentimen":
             st.warning("⚠️ Masukkan teks ulasan terlebih dahulu!")
         else:
             with st.spinner("Memproses..."):
-                clean, steps = preprocess_with_steps(user_input, stemmer, stop_words, tokenize)
+                clean, steps = preprocess_with_negation(user_input, stemmer, stop_words, tokenize)
 
             if not clean.strip():
                 st.error("❌ Teks tidak mengandung kata bermakna setelah preprocessing.")
@@ -414,7 +414,7 @@ elif menu == "🔍 Prediksi Sentimen":
                             col_l.markdown(f"**{label}:**")
                             col_v.markdown(f"`{val}`" if label == "Final input model" else val)
 
-                    st.info("**Model:** SVM + Unigram+Bigram (1,2)\n\n**Accuracy:** 91.53% | **F1-Score:** 91.32%")
+                
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HASIL PENELITIAN
