@@ -354,26 +354,12 @@ elif menu == "🔍 Prediksi Sentimen":
                     plt.close()
 
                 with col_detail:
-                    st.markdown("**Detail Preprocessing Bertahap:**")
-                    with st.expander("🔍 Lihat setiap tahapan preprocessing", expanded=True):
-                        rows = [
-                            ("Teks asli",            steps['original']),
-                            ("1. Case folding",       steps['case_folding']),
-                            ("2. Normalisasi",        steps['normalisasi']),
-                            ("3. Cleaning",           steps['cleaning']),
-                            ("4. Slang normalized",   steps['slang']),
-                            ("5. Tokens",             str(steps['tokens_raw'])),
-                            ("6. Stopword removal",   str(steps['after_stopword'])),
-                            ("7. Stemming",           str(steps['after_stemming'])),
-                            ("Final input model",     clean),
-                            ("Jumlah token",          str(len(clean.split()))),
-                        ]
-                        for label, val in rows:
-                            col_l, col_v = st.columns([1.2, 2])
-                            col_l.markdown(f"**{label}:**")
-                            col_v.markdown(f"`{val}`" if label == "Final input model" else val)
-
-                    st.info("**Model:** SVM + Unigram+Bigram (1,2)\n\n**Accuracy:** 91.53% | **F1-Score:** 91.32%")
+                st.markdown("**Detail Preprocessing:**")
+                st.markdown(f"**Teks asli:** {user_input[:200]}{'...' if len(user_input) > 200 else ''}")
+                st.markdown(f"**Setelah preprocessing:**")
+                st.code(clean if clean else "(teks kosong setelah preprocessing)")
+                st.markdown(f"**Jumlah token:** {len(clean.split()) if clean else 0}")
+                st.markdown(f"**Model:** SVM + Unigram+Bigram (1,2)")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HASIL PENELITIAN
