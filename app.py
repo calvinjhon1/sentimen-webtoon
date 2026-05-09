@@ -345,7 +345,7 @@ elif menu == "🔍 Prediksi Sentimen":
             st.warning("⚠️ Masukkan teks ulasan terlebih dahulu!")
         else:
             with st.spinner("Memproses..."):
-                clean, steps = preprocess_with_negation(user_input, stemmer, stop_words, tokenize)
+                clean, steps = preprocess_with_steps(user_input, stemmer, stop_words, tokenize)
 
             if not clean.strip():
                 st.error("❌ Teks tidak mengandung kata bermakna setelah preprocessing.")
