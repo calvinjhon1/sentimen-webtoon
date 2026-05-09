@@ -329,8 +329,6 @@ elif menu == "🔍 Prediksi Sentimen":
         "✅ Positif — pujian fitur": "aplikasi ini bagus banget banyak komik seru yang bisa dibaca gratis",
         "✅ Positif — puas konten": "webtoon sangat seru ceritanya menarik dan gambarnya keren sekali",
         "❌ Negatif — error teknis": "aplikasi sering error dan lambat sekali sangat mengecewakan",
-        "❌ Negatif — kecewa konten": "kecewa sekali komiknya membosankan dan tidak menarik sama sekali",
-        "❌ Negatif — tidak bisa login": "gak bisa login sudah lama belum ada perbaikan dari developer",
         "❌ Negatif — iklan berlebihan": "iklannya terlalu banyak dan sangat mengganggu tidak nyaman dipakai",
     }
 
