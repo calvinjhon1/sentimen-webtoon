@@ -320,7 +320,7 @@ elif menu == "🔍 Prediksi Sentimen":
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "📊 Hasil Penelitian":
     st.markdown("## 📊 Hasil Penelitian — 15 Eksperimen")
-    st.markdown("Perbandingan performa seluruh kombinasi konfigurasi n-gram dan algoritma klasifikasi.")
+    st.markdown("Perbandingan performa seluruh kombinasi konfigurasi n-gram dan algoritma klasifikasi (15 skenario).")
 
     df = pd.DataFrame(HASIL)
 
@@ -345,49 +345,10 @@ elif menu == "📊 Hasil Penelitian":
     st.markdown("---")
     st.markdown("### 📈 Perbandingan F1-Score per Konfigurasi N-Gram")
 
-    ngram_order  = ['Unigram (1,1)','Bigram (2,2)','Trigram (3,3)',
-                    'Unigram+Bigram (1,2)','Unigram+Bigram+Trigram (1,3)']
-    ngram_labels = ['Unigram\n(1,1)','Bigram\n(2,2)','Trigram\n(3,3)',
-                    'Uni+Bigram\n(1,2)','Uni+Bi+Tri\n(1,3)']
-    algo_list = ["SVM","Random Forest","XGBoost"]
-    colors    = ['#4285F4','#34A853','#FBBC04']
-
-    # Buat lookup dict dari DataFrame supaya tidak bergantung pada exact string match
-    df_chart = df.copy()
-    df_chart['N-Gram'] = df_chart['N-Gram'].str.strip()
-    lookup = {}
-    for _, row in df_chart.iterrows():
-        lookup[(row['Algoritma'], row['N-Gram'])] = row['F1-Score']
-
-    x     = np.arange(5)
-    width = 0.25
-    fig, ax = plt.subplots(figsize=(12, 5))
-
-    for i, algo in enumerate(algo_list):
-        if algo not in filter_algo:
-            continue
-        vals = [lookup.get((algo, ng), 0) for ng in ngram_order]
-        bars = ax.bar(x + i*width, vals, width, label=algo,
-                      color=colors[i], edgecolor='black', linewidth=0.5)
-        for bar, val in zip(bars, vals):
-            if val > 0:
-                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.003,
-                        f'{val:.3f}', ha='center', va='bottom', fontsize=8.5, fontweight='bold')
-
-    ax.set_xlabel('Konfigurasi N-Gram', fontsize=11)
-    ax.set_ylabel('F1-Score (Weighted)', fontsize=11)
-    ax.set_title('Perbandingan F1-Score: Konfigurasi N-Gram vs Algoritma',
-                 fontsize=13, fontweight='bold')
-    ax.set_xticks(x + width)
-    ax.set_xticklabels(ngram_labels, fontsize=10)
-    ax.set_ylim(0.3, 0.95)
-    ax.legend(fontsize=10)
-    ax.grid(axis='y', alpha=0.3, linestyle='--')
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    plt.tight_layout()
-    st.pyplot(fig)
-    plt.close()
+    try:
+        st.image("barchart_f1score.png", use_container_width=True)
+    except Exception:
+        st.warning("⚠️ File `barchart_f1score.png` tidak ditemukan di repo. Pastikan sudah diupload ke GitHub.")
 
     st.markdown("---")
     st.markdown("### 🏆 Model Terbaik Keseluruhan")
@@ -398,4 +359,3 @@ elif menu == "📊 Hasil Penelitian":
     b3.metric("Accuracy",       f"{best['Accuracy']:.2%}")
     b4.metric("F1-Score",       f"{best['F1-Score']:.2%}")
     b5.metric("Waktu Training",  f"{best['Waktu (s)']} detik")
-
