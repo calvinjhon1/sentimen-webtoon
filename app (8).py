@@ -352,6 +352,13 @@ elif menu == "📊 Hasil Penelitian":
     algo_list = ["SVM","Random Forest","XGBoost"]
     colors    = ['#4285F4','#34A853','#FBBC04']
 
+    # Buat lookup dict dari DataFrame supaya tidak bergantung pada exact string match
+    df_chart = df.copy()
+    df_chart['N-Gram'] = df_chart['N-Gram'].str.strip()
+    lookup = {}
+    for _, row in df_chart.iterrows():
+        lookup[(row['Algoritma'], row['N-Gram'])] = row['F1-Score']
+
     x     = np.arange(5)
     width = 0.25
     fig, ax = plt.subplots(figsize=(12, 5))
@@ -359,10 +366,7 @@ elif menu == "📊 Hasil Penelitian":
     for i, algo in enumerate(algo_list):
         if algo not in filter_algo:
             continue
-        sub  = df[df['Algoritma'] == algo]
-        vals = [sub[sub['N-Gram'] == ng]['F1-Score'].values[0]
-                if len(sub[sub['N-Gram'] == ng]) > 0 else 0
-                for ng in ngram_order]
+        vals = [lookup.get((algo, ng), 0) for ng in ngram_order]
         bars = ax.bar(x + i*width, vals, width, label=algo,
                       color=colors[i], edgecolor='black', linewidth=0.5)
         for bar, val in zip(bars, vals):
@@ -394,3 +398,4 @@ elif menu == "📊 Hasil Penelitian":
     b3.metric("Accuracy",       f"{best['Accuracy']:.2%}")
     b4.metric("F1-Score",       f"{best['F1-Score']:.2%}")
     b5.metric("Waktu Training",  f"{best['Waktu (s)']} detik")
+
