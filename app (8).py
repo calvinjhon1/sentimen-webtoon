@@ -108,7 +108,6 @@ HASIL = [
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Webtoon_App_Logo.png/240px-Webtoon_App_Logo.png", width=80)
     st.markdown("### 📚 Analisis Sentimen Webtoon")
     st.markdown("---")
     menu = st.radio("Navigasi", ["🏠 Beranda", "🔍 Prediksi Sentimen", "📊 Hasil Penelitian"])
@@ -119,7 +118,8 @@ with st.sidebar:
     st.markdown("**F1-Score:** 83.05%")
     st.markdown("---")
     st.markdown("**Peneliti:** Calvin Jhon")
-    st.markdown("Sistem Informasi · 2025")
+    st.markdown("**NIM:** 00000070300")
+    st.markdown("Sistem Informasi · 2022")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # BERANDA
@@ -144,7 +144,7 @@ if menu == "🏠 Beranda":
         st.markdown("### 📋 Tentang Penelitian")
         st.markdown('<div class="info-box">Penelitian ini menganalisis pengaruh 5 konfigurasi n-gram pada TF-IDF terhadap performa 3 algoritma klasifikasi (SVM, Random Forest, XGBoost) dalam mengklasifikasikan sentimen ulasan aplikasi Webtoon di Google Play Store — menghasilkan 15 skenario eksperimen.</div>', unsafe_allow_html=True)
         st.markdown("**Rumusan Masalah:**")
-        st.markdown("1. Bagaimana pengaruh konfigurasi n-gram terhadap performa TF-IDF?")
+        st.markdown("1. Bagaimana pengaruh konfigurasi n-gram terhadap performa TF-IDF dalam mengklasifikasikan sentimen webtoon?")
         st.markdown("2. Bagaimana perbandingan performa SVM, Random Forest, dan XGBoost?")
         st.markdown("3. Kombinasi mana yang menghasilkan performa terbaik?")
         c_a, c_b, c_c = st.columns(3)
@@ -186,7 +186,7 @@ elif menu == "🔍 Prediksi Sentimen":
     preprocess_text, preprocess_with_steps = load_preprocessing()
 
     if model is None:
-        st.error("⚠️ File `model_SVM_best.pkl` tidak ditemukan.")
+        st.error("⚠️ File `model_SVM_best(2).pkl` tidak ditemukan.")
         st.stop()
     if preprocess_with_steps is None:
         st.error("⚠️ `preprocessing_utils.py` gagal dimuat.")
@@ -203,9 +203,8 @@ elif menu == "🔍 Prediksi Sentimen":
         "✅ Positif — puas konten":          "webtoon sangat seru ceritanya menarik dan gambarnya keren sekali",
         "❌ Negatif — error teknis":         "aplikasi sering error dan lambat sekali sangat mengecewakan",
         "❌ Negatif — kecewa konten":        "kecewa sekali komiknya membosankan dan tidak menarik sama sekali",
-        "❌ Negatif — tidak bisa login":     "gak bisa login sudah lama belum ada perbaikan dari developer",
         "❌ Negatif — iklan berlebihan":     "iklannya terlalu banyak dan sangat mengganggu tidak nyaman dipakai",
-        "❌ Negatif — negasi (uji model)":  "aplikasi ini gak bagus sama sekali",
+     
     }
 
     pilihan = st.selectbox("Atau pilih contoh:", list(contoh.keys()))
