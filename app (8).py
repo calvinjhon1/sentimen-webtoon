@@ -340,13 +340,13 @@ elif menu == "📊 Hasil Penelitian":
         df_show[['Kode','Algoritma','N-Gram','Accuracy','Precision','Recall','F1-Score','Waktu (s)']],
         use_container_width=True, height=430
     )
-    st.markdown("*★ = Konfigurasi terbaik per algoritma*")
+    st.markdown("*Model terbaik per algoritma: SVM → EXP-05 (Uni+Bi+Tri, F1 83.05%) · RF → EXP-10 (Uni+Bi+Tri, F1 82.05%) · XGBoost → EXP-11 (Unigram, F1 81.14%)*")
 
     st.markdown("---")
     st.markdown("### 📈 Perbandingan F1-Score per Konfigurasi N-Gram")
 
     ngram_order  = ['Unigram (1,1)','Bigram (2,2)','Trigram (3,3)',
-                    'Unigram+Bigram (1,2)','Unigram+Bigram+Trigram (1,3) ★']
+                    'Unigram+Bigram (1,2)','Unigram+Bigram+Trigram (1,3)']
     ngram_labels = ['Unigram\n(1,1)','Bigram\n(2,2)','Trigram\n(3,3)',
                     'Uni+Bigram\n(1,2)','Uni+Bi+Tri\n(1,3)']
     algo_list = ["SVM","Random Forest","XGBoost"]
