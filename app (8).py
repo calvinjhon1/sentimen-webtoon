@@ -313,7 +313,7 @@ elif menu == "🔍 Prediksi Sentimen":
                         col_l.markdown("**Jumlah token:**")
                         col_v.markdown(str(len(clean.split())))
 
-                    st.info("**Model:** SVM + Unigram+Bigram+Trigram (1,3)\n\n**Accuracy:** 83.09% | **F1-Score:** 83.05%")
+                 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HASIL PENELITIAN
