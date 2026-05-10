@@ -57,7 +57,7 @@ st.markdown("""
 @st.cache_resource
 def load_model():
     try:
-        with open('model_RF_best.pkl', 'rb') as f:
+        with open('model_SVM_best (1).pkl', 'rb') as f:
             saved = pickle.load(f)
         return saved['model'], saved['tfidf']
     except FileNotFoundError:
