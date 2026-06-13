@@ -59,7 +59,18 @@ def load_model():
     try:
         with open('model_SVM_best (2).pkl', 'rb') as f:
             saved = pickle.load(f)
-        return saved['model'], saved['tfidf']
+        model = saved['model']
+        tfidf = saved['tfidf']
+
+        # Fix kompatibilitas versi scikit-learn:
+        # model SVM yang di-pickle dengan versi sklearn lama tidak punya
+        # atribut internal '_effective_probability' yang dibutuhkan oleh
+        # versi sklearn baru saat memanggil decision_function() pada
+        # input sparse (hasil dari TF-IDF). Tambahkan secara manual.
+        if not hasattr(model, '_effective_probability'):
+            model._effective_probability = bool(getattr(model, 'probability', False))
+
+        return model, tfidf
     except FileNotFoundError:
         return None, None
 
@@ -236,9 +247,19 @@ elif menu == "🔍 Prediksi Sentimen":
                     prob_neg = float(proba[0])
                 else:
                     # SVM → pakai decision_function lalu konversi sigmoid
-                    score    = model.decision_function(vec)[0]
-                    prob_pos = 1 / (1 + math.exp(-score))
-                    prob_neg = 1 - prob_pos
+                    # (model dilatih dengan probability=False, sehingga
+                    # decision_function adalah cara standar untuk
+                    # mendapatkan confidence score)
+                    try:
+                        score    = model.decision_function(vec)[0]
+                        prob_pos = 1 / (1 + math.exp(-score))
+                        prob_neg = 1 - prob_pos
+                    except AttributeError:
+                        # Fallback terakhir jika decision_function tetap
+                        # gagal karena ketidaksesuaian versi sklearn
+                        pred_raw = int(model.predict(vec)[0])
+                        prob_pos = 1.0 if pred_raw == 1 else 0.0
+                        prob_neg = 1.0 - prob_pos
 
                 pred_label = "POSITIF" if prob_pos >= 0.5 else "NEGATIF"
 
