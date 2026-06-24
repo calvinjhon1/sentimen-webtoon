@@ -173,9 +173,8 @@ if menu == "🏠 Beranda":
             "4️⃣ Normalisasi slang (ga→tidak)",
             "5️⃣ Tokenisasi",
             "6️⃣ Stopword Removal (negasi dipertahankan)",
-            "6.5️⃣ Bigram Negasi (tidak_bagus, tidak_bisa, ...)",
-            "7️⃣ Stemming — PySastrawi",
-            "8️⃣ TF-IDF + Unigram+Bigram",
+            "7️⃣Bigram Negasi (tidak_bagus, tidak_bisa, ...)",
+            "8️⃣Stemming — PySastrawi",
             "9️⃣ SVM Linear"
         ]:
             st.markdown(f'<div class="step-box">{s}</div>', unsafe_allow_html=True)
